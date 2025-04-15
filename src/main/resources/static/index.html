@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Package Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center">
+<div class="w-full max-w-xl bg-white shadow-lg rounded-xl p-8 space-y-6">
+    <h1 class="text-3xl font-bold text-center text-blue-700">📦 Package Portal</h1>
+
+    <!-- Track Package -->
+    <div>
+        <label for="trackingId" class="block font-semibold mb-1">Track Package</label>
+        <input id="trackingId" type="text" placeholder="Enter Tracking ID"
+               class="w-full px-4 py-2 border rounded-md mb-2" />
+        <button onclick="trackPackage()"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">Track</button>
+    </div>
+
+    <!-- Generate Invoice -->
+    <div>
+        <label for="invoiceId" class="block font-semibold mb-1">Generate Invoice</label>
+        <input id="invoiceId" type="text" placeholder="Enter Invoice ID"
+               class="w-full px-4 py-2 border rounded-md mb-2" />
+        <button onclick="generateInvoice()"
+                class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md">Generate</button>
+    </div>
+
+    <!-- View Shipment History -->
+    <div>
+        <label for="userId" class="block font-semibold mb-1">View Shipment History</label>
+        <input id="userId" type="text" placeholder="Enter User ID"
+               class="w-full px-4 py-2 border rounded-md mb-2" />
+        <button onclick="viewHistory()"
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md">View History</button>
+    </div>
+
+    <!-- Output -->
+    <div id="output" class="bg-gray-50 border rounded-md p-4 whitespace-pre-wrap text-sm"></div>
+</div>
+
+<script>
+    const apiBase = "http://localhost:8080/api";
+
+    async function trackPackage() {
+        const id = document.getElementById("trackingId").value;
+        if (!id) return setOutput("Please enter a tracking ID.");
+        try {
+            const res = await fetch(`${apiBase}/track/${id}`);
+            const data = await res.text();
+            setOutput("📦 Tracking Info:\n" + data);
+        } catch (err) {
+            setOutput("❌ Failed to fetch tracking info.");
+        }
+    }
+
+    async function generateInvoice() {
+        const id = document.getElementById("invoiceId").value;
+        if (!id) return setOutput("Please enter an invoice ID.");
+        try {
+            const res = await fetch(`${apiBase}/invoice/${id}`);
+            const data = await res.text();
+            setOutput("🧾 Invoice:\n" + data);
+        } catch (err) {
+            setOutput("❌ Failed to fetch invoice.");
+        }
+    }
+
+    async function viewHistory() {
+        const id = document.getElementById("userId").value;
+        if (!id) return setOutput("Please enter a user ID.");
+        try {
+            const res = await fetch(`${apiBase}/history/${id}`);
+            const data = await res.text();
+            setOutput("📜 Shipment History:\n" + data);
+        } catch (err) {
+            setOutput("❌ Failed to fetch shipment history.");
+        }
+    }
+
+    function setOutput(message) {
+        document.getElementById("output").innerText = message;
+    }
+</script>
+</body>
+</html>
